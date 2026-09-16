@@ -16,6 +16,8 @@ from PIL import Image
 
 def plain_tex(text):
     text = re.sub(r"\\cite\{[^}]*\}", "", text)
+    text = re.sub(r"\\textcolor\{[^}]*\}\{([^{}]*)\}", r"\1", text)
+    text = re.sub(r"\\href\{[^}]*\}\s*\{[^{}]*\}", "", text)
     text = text.replace(r"\method{}", "VisTacFusion").replace(r"\sensor{}", "GelSlim 5.0")
     text = re.sub(r"\\(?:textbf|textit|mathrm)\{([^{}]*)\}", r"\1", text)
     text = text.replace(r"$^{\dag}$", "").replace(r"$L_1$", "L₁").replace(r"\%", "%")
@@ -57,14 +59,17 @@ def main():
     data = {"abstract": abstract.splitlines(), "tables": tables}
     (output / "data.js").write_text("window.PAPER_DATA = " + json.dumps(data, ensure_ascii=False, indent=2) + ";\n")
 
-    with pymupdf.open(source / "figures/figure1.pdf") as doc:
-        pix = doc[0].get_pixmap(matrix=pymupdf.Matrix(2, 2), alpha=False)
-        Image.frombytes("RGB", [pix.width, pix.height], pix.samples).save(assets / "overview.webp", quality=92)
-    # Re-encode losslessly to remove image metadata; pixels are not changed.
-    for original, filename in [("figure3.png", "architecture.png"), ("qualitative_results.png", "qualitative.png"), ("ratio_sweep_panel.png", "data-mixing.png")]:
+    for original, filename, scale in [("figure1.pdf", "overview.webp", 2), ("figure2.pdf", "sensor.webp", 2), ("figure4.pdf", "observations.webp", 3)]:
+        with pymupdf.open(source / "figures" / original) as doc:
+            pix = doc[0].get_pixmap(matrix=pymupdf.Matrix(scale, scale), alpha=False)
+            Image.frombytes("RGB", [pix.width, pix.height], pix.samples).save(assets / filename, quality=90, method=6)
+    # Re-encode to remove image metadata; PNG pixels are not changed.
+    for original, filename in [("figure3.png", "architecture.png"), ("qualitative_results.jpg", "qualitative.jpg"), ("ratio_sweep_panel.png", "data-mixing.png")]:
         with Image.open(source / "figures" / original) as original_image:
             clean = Image.frombytes(original_image.mode, original_image.size, original_image.tobytes())
-            clean.save(assets / filename, optimize=True)
+            clean.save(assets / filename, optimize=True, **({"quality": 90} if filename.endswith(".jpg") else {}))
+    for stale in ["qualitative.png"]:
+        (assets / stale).unlink(missing_ok=True)
 
     # Copy only visible PDF pages, without source metadata, annotations, or attachments.
     with pymupdf.open(source / "main.pdf") as original:

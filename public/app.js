@@ -7,13 +7,6 @@
   const precision = [4, 4, 4, 3, 4];
   const ours = mode => data.tables[mode].find(row => row.ours).values;
   const paired = ours('both');
-  const abstract = document.getElementById('abstract-copy');
-  abstract.replaceChildren(...data.abstract.map(text => {
-    const p = document.createElement('p');
-    p.textContent = text;
-    return p;
-  }));
-
   function setBaseline(mode) {
     const baseline = ours(mode);
     document.querySelectorAll('[data-baseline]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.baseline === mode)));

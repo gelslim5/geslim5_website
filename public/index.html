@@ -10,18 +10,19 @@
   <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
   <title>GelSlim 5.0: Unifying Vision and Touch with a Single Fingertip Camera</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
   <script src="data.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#overview">Skip to content</a>
+  <a class="skip-link" href="#summary">Skip to content</a>
   <header class="site-header">
     <nav aria-label="Page sections">
-      <a href="#overview">Abstract</a>
+      <a href="#summary">Summary</a>
+      <a href="#sensor">Sensor</a>
       <a href="#method">Method</a>
       <a href="#results">Results</a>
-      <a href="#qualitative">Qualitative results</a>
+      <a href="#insights">Insights</a>
       <a href="#citation">Citation</a>
     </nav>
   </header>
@@ -29,6 +30,7 @@
   <main id="top">
     <section class="hero wrap" aria-labelledby="paper-title">
       <h1 id="paper-title">GelSlim 5.0: Unifying Vision and Touch<br class="title-break"> with a Single Fingertip Camera</h1>
+      <p class="tagline">One fingertip camera. Two observation states. Object pose and contact geometry from either, or both.</p>
       <div class="paper-links">
         <a class="paper-button" href="assets/paper.pdf">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6M9 16h6"/></svg>
@@ -48,57 +50,88 @@
         </span>
       </div>
       <figure class="hero-figure">
-        <img src="assets/overview.webp" width="1920" height="965" alt="GelSlim 5.0 switches between visual and tactile observations. VisTacFusion combines them to predict depth, surface normals, and planar object pose." fetchpriority="high">
-        <figcaption><strong>GelSlim 5.0</strong> uses a single camera to acquire through-membrane visual images with UV off and contact-sensitive tactile images with UV on. <strong>VisTacFusion</strong> combines these observations to estimate contact geometry and planar object pose. Images are acquired sequentially under approximately stationary contact.</figcaption>
+        <img src="assets/overview.webp" width="1920" height="965" alt="GelSlim 5.0 switches between a proximity mode with UV off and a tactile mode with UV on. VisTacFusion combines the two observations to predict depth, surface normals, and planar object pose." fetchpriority="high">
+        <figcaption><strong>GelSlim 5.0</strong> switches illumination instead of cameras: with UV off the camera sees through the membrane (proximity mode); with UV on it images contact (tactile mode). <strong>VisTacFusion</strong> combines the pair to estimate contact depth, surface normals, and planar object pose.</figcaption>
       </figure>
     </section>
 
-    <section id="overview" class="section abstract-section" aria-labelledby="abstract-title">
+    <section id="summary" class="section abstract-section" aria-labelledby="summary-title">
       <div class="prose">
-        <h2 id="abstract-title">Abstract</h2>
-        <div id="abstract-copy">
-          <p>Vision and touch provide complementary cues for object pose and local contact geometry. GelSlim 5.0 acquires both observations using one fixed camera, while VisTacFusion combines them through separate prediction paths for geometry and pose.</p>
-          <p>The complete abstract is available in the <a href="assets/paper.pdf">paper</a>.</p>
+        <h2 id="summary-title">Summary</h2>
+        <ul class="summary-list">
+          <li><strong>A tactile fingertip that also sees.</strong> A continuous UV-responsive contact layer turns opaque under UV and transparent without it, so one fixed camera acquires visual and tactile images from the same viewpoint. No second camera, no inter-camera extrinsic calibration.</li>
+          <li><strong>Task-specific fusion.</strong> VisTacFusion reads object pose from tactile-initialized queries and contact geometry from intermediate tactile features, with visual context injected through a 16-token attention bottleneck. Modality dropout lets one model run on vision, touch, or both.</li>
+          <li><strong>Vision and touch resolve each other's ambiguities.</strong> On real validation data from 12 objects, paired input reduces depth MSE by 61.2% and angular error by 72.3% relative to touch alone, and depth MSE by 93.7% relative to vision alone, within the same model.</li>
+        </ul>
+        <p class="abstract-link">Full abstract and details are in the <a href="assets/paper.pdf">paper</a>.</p>
+      </div>
+    </section>
+
+    <section id="sensor" class="section wrap" aria-labelledby="sensor-title">
+      <h2 id="sensor-title">GelSlim 5.0 Sensor</h2>
+      <p class="section-intro">Built on the GelSlim 4.0 body, the sensor replaces the opaque skin with a two-layer silicone membrane: a clear elastomer base and a thin, continuous UV-responsive layer at the contact surface. UV LEDs replace the blue illumination channel, and a driver PCB switches them in sync with image capture.</p>
+      <div class="sensor-grid">
+        <figure class="research-figure sensor-figure">
+          <a href="assets/sensor.webp" class="zoomable" data-zoom aria-label="Enlarge the sensor hardware figure">
+            <img src="assets/sensor.webp" width="2250" height="2181" alt="Exploded view of GelSlim 5.0 with UV-responsive layer, transparent elastomer, lens, UV LEDs, sensor body, camera, and LED driver PCB; illumination states showing the layer opaque with UV on and transparent with UV off; prototype photographs in both modes with a 30 mm sensing area." loading="lazy">
+            <span class="zoom-hint">Enlarge figure ↗</span>
+          </a>
+          <figcaption><strong>Hardware and observation states.</strong> (a) Exploded assembly. (b) The UV-responsive layer is opaque under UV and transparent without it. (c) Prototype in tactile mode (i) and proximity mode (ii); the sensing area is 30 mm across.</figcaption>
+        </figure>
+        <figure class="research-figure observations-figure">
+          <a href="assets/observations.webp" class="zoomable" data-zoom aria-label="Enlarge the common-view observation examples">
+            <img src="assets/observations.webp" width="2095" height="1114" alt="Tactile (UV on) and proximity (UV off) images of a hex nut, a key, a hex key, and a screw, each pair captured from the same fixed camera." loading="lazy">
+            <span class="zoom-hint">Enlarge figure ↗</span>
+          </a>
+          <figcaption><strong>Common-view observations.</strong> Tactile (top) and proximity (bottom) images of everyday objects, captured sequentially from the same fixed camera under quasi-static contact.</figcaption>
+        </figure>
+      </div>
+      <div class="highlights" role="list">
+        <div class="highlight" role="listitem">
+          <h3>Continuous contact film</h3>
+          <p>The UV-reactive layer is spin-coated across the whole interface. There are no clear windows, markers, or moving parts, so the tactile image keeps full-field contact detail.</p>
+        </div>
+        <div class="highlight" role="listitem">
+          <h3>Shared viewpoint</h3>
+          <p>The camera and lens never move between modes. Both images share pixel coordinates, which lets the estimator associate appearance with contact without extrinsic calibration.</p>
+        </div>
+        <div class="highlight" role="listitem">
+          <h3>Endurance</h3>
+          <p>More than 45,000 normal indentations at 20 N produced no cracking, delamination, or loss of the UV-induced state change.</p>
         </div>
       </div>
     </section>
 
     <section id="method" class="section wrap" aria-labelledby="method-title">
       <h2 id="method-title">VisTacFusion</h2>
-      <p class="section-intro">VisTacFusion estimates planar object pose, contact depth, and surface normals from visual and tactile observations. The model uses separate prediction paths for pose and geometry, with visual context shared through an attention bottleneck.</p>
+      <p class="section-intro">Pose and geometry need different things from the tactile image: a global summary for pose, and spatially resolved features for depth and normals. VisTacFusion keeps these paths separate and lets a compact visual bottleneck condition both.</p>
       <figure class="research-figure architecture">
         <a href="assets/architecture.png" class="zoomable" data-zoom aria-label="Enlarge the VisTacFusion architecture">
           <img src="assets/architecture.png" width="4640" height="2682" alt="VisTacFusion architecture: frozen SITR and MAE encoders, asymmetric bottleneck fusion, gated visual conditioning, a DPT geometry decoder, and a pose MLP." loading="lazy">
           <span class="zoom-hint">Enlarge figure ↗</span>
         </a>
-        <figcaption><strong>Model architecture.</strong> The pose path reads the final query state Q<sub>4</sub>. The geometry path decodes intermediate tactile features conditioned on the final visual bottleneck B<sub>4</sub>.</figcaption>
+        <figcaption><strong>Architecture.</strong> The pose path reads the final query state Q<sub>4</sub>. The geometry path decodes intermediate tactile features conditioned on the final visual bottleneck B<sub>4</sub>.</figcaption>
       </figure>
-      <div class="method-description reading-width">
-        <p><strong>Feature extraction.</strong> Frozen SITR-B/16 and MAE-L/16 encode tactile and visual images. Projected tactile features initialize spatial and pose queries; projected visual tokens form memory M.</p>
-        <p><strong>Pose estimation.</strong> Sixteen bottleneck tokens read visual memory. Across four fusion layers, tactile-initialized queries attend to the bottleneck and then to one another. The pose head concatenates the final pose token with mean-pooled spatial queries to predict rotation and translation.</p>
-        <p><strong>Contact geometry.</strong> Tactile features from encoder blocks 3, 6, 9, and 12 bypass the pose-query trunk. Each receives a gated residual update from B<sub>4</sub> before a DPT decoder predicts depth and surface normals.</p>
-      </div>
-      <section class="technical-section reading-width" id="fusion-details" aria-labelledby="fusion-title">
-        <h3 id="fusion-title">Fusion data flow</h3>
-        <p>Each fusion layer updates the bottleneck first, then the queries. Visual memory M remains fixed across all four layers.</p>
-        <div class="flow-table table-scroll" tabindex="0" role="region" aria-label="Attention inputs and outputs">
-          <table>
-            <caption>Attention inputs and outputs in layer ℓ</caption>
-            <thead><tr><th scope="col">Operation</th><th scope="col">Queries</th><th scope="col">Keys / values</th><th scope="col">Output</th></tr></thead>
-            <tbody>
-              <tr><th scope="row">Bottleneck cross-attention</th><td>B<sub>ℓ−1</sub></td><td>M</td><td>B<sub>ℓ</sub></td></tr>
-              <tr><th scope="row">Query cross-attention + FFN</th><td>Q<sub>ℓ−1</sub></td><td>B<sub>ℓ</sub></td><td>Q̃<sub>ℓ</sub></td></tr>
-              <tr><th scope="row">Query self-attention + FFN</th><td>Q̃<sub>ℓ</sub></td><td>Q̃<sub>ℓ</sub></td><td>Q<sub>ℓ</sub></td></tr>
-            </tbody>
-          </table>
+      <div class="highlights" role="list">
+        <div class="highlight" role="listitem">
+          <h3>Frozen encoders</h3>
+          <p>SITR-B/16 encodes touch and MAE-L/16 encodes vision. Only the projections, fusion trunk, and heads are trained.</p>
         </div>
-        <p class="table-note">Attention and FFN sublayers use pre-normalization and residual connections. B<sub>0</sub> is learned; B<sub>ℓ</sub> and Q<sub>ℓ</sub> carry into the next layer. The bottleneck update has no FFN.</p>
-      </section>
+        <div class="highlight" role="listitem">
+          <h3>Pose from queries</h3>
+          <p>Sixteen bottleneck tokens read the visual memory. Over four layers, tactile-initialized queries attend to the bottleneck and to each other; the final pose token and pooled spatial queries predict rotation and translation.</p>
+        </div>
+        <div class="highlight" role="listitem">
+          <h3>Geometry from features</h3>
+          <p>Tactile features from encoder blocks 3, 6, 9, and 12 bypass the query trunk. Each receives a zero-initialized gated update from B<sub>4</sub> before a DPT decoder predicts depth and normals.</p>
+        </div>
+      </div>
+      <p class="method-note reading-width">Modality dropout trains the same weights on paired, tactile-only, and visual-only inputs (sampled at 70 / 25 / 5%), so a single checkpoint serves all three at inference.</p>
     </section>
 
     <section id="results" class="section wrap" aria-labelledby="results-title">
-      <h2 id="results-title">Quantitative Results</h2>
-      <p class="section-intro">On real validation data, paired observations reduce all five reported errors relative to either input alone in VisTacFusion. The comparisons below use the values in Table II.</p>
+      <h2 id="results-title">Results</h2>
+      <p class="section-intro">Real validation data from 12 known objects, within-session. Depth and normals use the depth-selected checkpoint; rotation and translation use the angle-selected checkpoint. Each checkpoint is evaluated in all three input modes without reselection.</p>
       <div class="comparison-toolbar">
         <p>Paired-input improvement over:</p>
         <div class="segmented" role="group" aria-label="Select the single-modality baseline">
@@ -123,10 +156,10 @@
           <p class="metric-detail" id="translation-detail">0.0137 → 0.0053</p>
         </article>
       </div>
-      <p class="result-context">Comparisons use the same model with different inputs. Geometry and pose use separate task-selected checkpoints, each evaluated in all three modes.</p>
+      <p class="result-context">Same VisTacFusion checkpoints, different inputs. Touch dominates contact-depth accuracy; vision dominates orientation; the pair is best on every metric.</p>
 
       <div class="table-heading">
-        <h3>Model comparison</h3>
+        <h3>Comparison with baselines</h3>
         <div class="table-controls"><span>Input:</span><div class="segmented" role="group" aria-label="Select the table input configuration">
           <button type="button" data-mode="both" aria-pressed="true">Both</button>
           <button type="button" data-mode="tactile" aria-pressed="false">Tactile</button>
@@ -140,40 +173,43 @@
           <tbody id="results-body"><tr><th scope="row">VisTacFusion</th><td>0.0066</td><td>0.0074</td><td>0.0129</td><td>0.652</td><td>0.0053</td></tr></tbody>
         </table>
       </div>
-      <p class="table-note">Lower is better for all metrics. † Shared weights across input modes within each task-selected checkpoint. VITaL and MViTac are adapted implementations; MViTac predicts pose only. Full baseline descriptions are given in the paper.</p>
+      <p class="table-note">Lower is better. Bold marks the lowest paired-input error. † Shared weights across input modes within each task-selected checkpoint; unmarked single-modality rows are dedicated models. TVL+MAE and Sparsh-X+MAE swap the tactile encoder into our architecture; VITaL and MViTac are adapted implementations, and MViTac predicts pose only. Table II of the paper gives full details.</p>
       <noscript><p>The complete results are available in Table II of the <a href="assets/paper.pdf">paper</a>. Enable JavaScript to switch input configurations on this page.</p></noscript>
 
-      <section class="technical-section reading-width" id="evaluation-details" aria-labelledby="evaluation-title">
-        <h3 id="evaluation-title">Evaluation setup</h3>
-        <p><strong>Data.</strong> Every tenth sample within each real acquisition session is held out. Evaluation uses 12 known objects, with objects and sessions shared between training and validation. Object identity is provided to the pose queries.</p>
-        <p><strong>Checkpoint selection.</strong> Depth and normals use the depth-selected checkpoint; rotation and translation use the angle-selected checkpoint. Each selected checkpoint is evaluated across all three input modes without reselection.</p>
-        <p><strong>Metrics.</strong> Depth and normal MSE average over the full image. Rotation L₁ measures cosine and sine errors; angular error is reported in degrees. Translation L₁ averages coordinate errors normalized by half the object's target size.</p>
-      </section>
-    </section>
-
-    <section id="qualitative" class="section wrap" aria-labelledby="qualitative-title">
-      <h2 id="qualitative-title">Qualitative Results</h2>
-      <p class="section-intro">Depth and surface-normal predictions from real observations, evaluated with a common depth-selected checkpoint across the three input modes.</p>
       <figure class="research-figure qualitative-figure">
-        <a class="zoomable" data-zoom href="assets/qualitative.png" aria-label="Enlarge the qualitative comparison">
-          <img src="assets/qualitative.png" width="7630" height="2541" alt="V-shape, corner, Y-junction, and rod contact geometries: simulated and real inputs, reference depth and normals, and visual-only, tactile-only, and paired predictions." loading="lazy">
+        <a class="zoomable" data-zoom href="assets/qualitative.jpg" aria-label="Enlarge the qualitative comparison">
+          <img src="assets/qualitative.jpg" width="3844" height="1280" alt="V-shape, corner, Y-junction, and rod contacts: simulated and real inputs, reference depth and normals, and visual-only, tactile-only, and paired predictions." loading="lazy">
           <span class="zoom-hint">Enlarge figure ↗</span>
         </a>
-        <figcaption><strong>Depth and normal predictions.</strong> Simulated inputs are shown for comparison; predictions use real inputs. Depth uses a shared color range within each row. Surface normals are RGB-encoded.</figcaption>
+        <figcaption><strong>Depth and normal predictions on real samples.</strong> Vision alone misses much of the V-shape and corner contact; touch recovers the boundaries; the pair also removes the irregular rod profile seen with touch alone. Depth uses a shared color range within each row; normals are RGB-encoded.</figcaption>
       </figure>
-      <p class="reading-width">Visual-only predictions miss much of the V-shape and corner contact regions. Tactile input recovers their boundaries, while paired input also reduces the irregular rod depth profile observed with tactile-only input.</p>
     </section>
 
-    <section id="training" class="section wrap" aria-labelledby="training-title">
-      <h2 id="training-title">Real–Simulation Co-training</h2>
-      <p class="section-intro">We combine real observations with simulated visual and tactile images of the same object geometries. The main experiments use a real:sim ratio of 1:1.27. Modality dropout trains paired, tactile-only, and visual-only inference within the same architecture.</p>
-      <figure class="research-figure ratio-figure">
-        <a href="assets/data-mixing.png" data-zoom class="zoomable" aria-label="Enlarge the data-mixing ablation">
-          <img src="assets/data-mixing.png" width="1035" height="795" alt="Depth MSE, angular error, and normalized translation error across completed real-to-simulation mixing ratios. Stars mark 1:1.27." loading="lazy">
-          <span class="zoom-hint">Enlarge figure ↗</span>
-        </a>
-        <figcaption><strong>Effect of real–simulation data mixing.</strong> Stars mark the ratio used in the main experiments. Real-only and mixed-data runs use 100 and 150 epochs, respectively.</figcaption>
-      </figure>
+    <section id="insights" class="section wrap" aria-labelledby="insights-title">
+      <h2 id="insights-title">What Mattered</h2>
+      <div class="insights-grid">
+        <figure class="research-figure ratio-figure">
+          <a href="assets/data-mixing.png" data-zoom class="zoomable" aria-label="Enlarge the data-mixing sweep">
+            <img src="assets/data-mixing.png" width="1035" height="795" alt="Depth MSE, angular error, and translation error across real-to-simulation mixing ratios. Stars mark 1:1.27." loading="lazy">
+            <span class="zoom-hint">Enlarge figure ↗</span>
+          </a>
+          <figcaption><strong>Real–simulation data mixing.</strong> Stars mark the 1:1.27 ratio used in the main experiments.</figcaption>
+        </figure>
+        <div class="takeaways">
+          <div class="takeaway">
+            <h3>Simulation helps, up to a point</h3>
+            <p>Co-training with Blender renders and generated tactile images lowers depth MSE from 0.0079 to 0.0066 mm² and angular error from 0.720° to 0.652° over real-only training. Adding more simulation past 1:1.27 stops helping, consistent with residual sim–real appearance gaps in proximity mode.</p>
+          </div>
+          <div class="takeaway">
+            <h3>MAE is the visual encoder to beat</h3>
+            <p>Across four tactile encoders, MAE gives the lowest depth and angular errors every time. SITR+MAE minimizes depth MSE and is the configuration we report; DAv2+MAE minimizes angular error (0.618°).</p>
+          </div>
+          <div class="takeaway">
+            <h3>Asymmetric fusion trades geometry for pose</h3>
+            <p>With identical encoders and heads, our bottleneck fusion lowers paired angular error from 0.747° (symmetric MBT) to 0.652°, while MBT keeps a small edge in depth and normal MSE.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="citation" class="section wrap" aria-labelledby="citation-title">
@@ -185,7 +221,7 @@
                with a Single Fingertip Camera},
   author    = {Anonymous},
   booktitle = {Under review},
-  year      = {2025}
+  year      = {2026}
 }</code></pre>
       </div>
     </section>
