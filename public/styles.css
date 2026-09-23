@@ -49,7 +49,7 @@ figcaption strong { font-weight: 600; }
 .zoom-hint { position: absolute; bottom: 0; right: 0; font-size: 12px; text-decoration: underline; }
 .zoomable:hover .zoom-hint { color: #094367; }
 .research-figure figcaption { margin-top: 8px; }
-.sensor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; max-width: 980px; margin-inline: auto; }
+.sensor-grid { display: grid; grid-template-columns: 1fr; gap: 40px; max-width: 760px; margin-inline: auto; }
 .sensor-grid .research-figure { margin-block: 0; }
 .sensor-grid > *, .highlights > *, .insights-grid > *, .metric-grid > * { min-width: 0; }
 .highlights { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; max-width: 980px; margin: 36px auto 0; }
