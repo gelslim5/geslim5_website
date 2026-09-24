@@ -1,7 +1,7 @@
 @charset "UTF-8";
 :root { --ink: #363636; --muted: #656565; --link: #176ca4; --line: #dedede; --pale: #f6f6f6; --bg: #ffffff; --card-bg: #f8f8f8; --table-border: #aaa; --table-row-border: #e8e8e8; --ours-bg: #f0f3f6; --dialog-bg: #fff; --dialog-backdrop: rgba(0,0,0,.67); --footer-bg: #f5f5f5; --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 28px; }
+html { scroll-padding-top: 60px; }
 body { margin: 0; color: var(--ink); background: var(--bg); font: 16px/1.75 var(--font); -webkit-font-smoothing: antialiased; }
 h1, h2, h3, p, figure { margin: 0; }
 h1, h2, h3 { line-height: 1.25; }
