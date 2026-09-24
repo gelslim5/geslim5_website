@@ -9,22 +9,24 @@
 
   /* ── fade helper ── */
   function fadeSwap(el, updateFn) {
-    el.style.transition = 'opacity 0.4s ease';
+    el.style.transition = 'opacity 0.25s ease';
     el.style.opacity = '0';
-    setTimeout(() => { updateFn(); el.style.transition = 'opacity 0.4s ease'; el.style.opacity = '1'; }, 420);
+    setTimeout(() => { updateFn(); el.style.transition = 'opacity 0.25s ease'; el.style.opacity = '1'; }, 270);
   }
 
-  /* ── improvement cards ── */
-  const metricGrid = document.querySelector('.metric-grid');
+  /* ── improvement cards: only fade the numbers, not the titles ── */
   function setBaseline(mode) {
     const baseline = ours(mode);
     document.querySelectorAll('[data-baseline]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.baseline === mode)));
-    fadeSwap(metricGrid, () => {
+    const valueEls = document.querySelectorAll('.metric-value, .metric-detail');
+    valueEls.forEach(el => { el.style.transition = 'opacity 0.25s ease'; el.style.opacity = '0'; });
+    setTimeout(() => {
       [{id:'depth',i:0,u:' mm²'},{id:'angle',i:3,u:'°'},{id:'translation',i:4,u:''}].forEach(({id,i,u}) => {
         document.getElementById(`${id}-improvement`).textContent = (100*(1-paired[i]/baseline[i])).toFixed(1);
         document.getElementById(`${id}-detail`).textContent = `${baseline[i].toFixed(precision[i])}${u} → ${paired[i].toFixed(precision[i])}${u}`;
       });
-    });
+      valueEls.forEach(el => { el.style.opacity = '1'; });
+    }, 270);
   }
   document.querySelectorAll('[data-baseline]').forEach(b => b.addEventListener('click', () => setBaseline(b.dataset.baseline)));
   setBaseline('tactile');
