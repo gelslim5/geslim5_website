@@ -19,7 +19,7 @@
   document.querySelectorAll('[data-baseline]').forEach(b => b.addEventListener('click', () => setBaseline(b.dataset.baseline)));
   setBaseline('tactile');
 
-  /* ── bar chart with grow animation ── */
+  /* ── bar chart with CSS transition animation ── */
   const metrics = [
     {key: 'Depth MSE', unit: 'mm²', idx: 0, prec: 4},
     {key: 'Angular error', unit: 'degrees', idx: 3, prec: 3},
@@ -27,14 +27,13 @@
   ];
   const OURS_COLOR = '#2a78d6';
   const BASE_COLOR = '#b3b2a9';
-  const BAR_H = 18;
-  const GAP = 8;
-  const LABEL_W = 140;
-  const VALUE_W = 65;
-  const CHART_W = 180;
-  const COL_GAP = 36;
-  const HEADER_H = 36;
-  const ANIM_DUR = '0.5s';
+  const BAR_H = 22;
+  const ROW_GAP = 14;
+  const LABEL_W = 150;
+  const VALUE_W = 70;
+  const CHART_W = 200;
+  const COL_GAP = 44;
+  const HEADER_H = 42;
 
   function buildChart(mode) {
     document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
@@ -42,8 +41,8 @@
     const container = document.getElementById('chart-container');
     container.innerHTML = '';
 
-    const totalW = LABEL_W + metrics.length * (CHART_W + VALUE_W + COL_GAP) - COL_GAP;
-    const totalH = HEADER_H + rows.length * (BAR_H + GAP) - GAP + 8;
+    const totalW = LABEL_W + metrics.length * (CHART_W + VALUE_W) + (metrics.length - 1) * COL_GAP;
+    const totalH = HEADER_H + rows.length * (BAR_H + ROW_GAP) - ROW_GAP + 12;
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', `0 0 ${totalW} ${totalH}`);
@@ -62,16 +61,16 @@
       const x = LABEL_W + mi * (CHART_W + VALUE_W + COL_GAP);
       const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       t.setAttribute('x', x + CHART_W / 2);
-      t.setAttribute('y', 13);
+      t.setAttribute('y', 15);
       t.setAttribute('text-anchor', 'middle');
-      t.setAttribute('font-size', '12');
+      t.setAttribute('font-size', '13');
       t.setAttribute('font-weight', '600');
       t.setAttribute('fill', headerColor);
       t.textContent = m.key;
       svg.appendChild(t);
       const u = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       u.setAttribute('x', x + CHART_W / 2);
-      u.setAttribute('y', 27);
+      u.setAttribute('y', 30);
       u.setAttribute('text-anchor', 'middle');
       u.setAttribute('font-size', '10');
       u.setAttribute('fill', mutedColor);
@@ -80,14 +79,15 @@
     });
 
     const maxes = metrics.map(m => Math.max(...rows.map(r => r.values[m.idx]).filter(v => v !== null)));
+    const allRects = [];
 
     rows.forEach((row, ri) => {
-      const y = HEADER_H + ri * (BAR_H + GAP);
+      const y = HEADER_H + ri * (BAR_H + ROW_GAP);
       const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      label.setAttribute('x', LABEL_W - 8);
+      label.setAttribute('x', LABEL_W - 10);
       label.setAttribute('y', y + BAR_H / 2 + 5);
       label.setAttribute('text-anchor', 'end');
-      label.setAttribute('font-size', '12');
+      label.setAttribute('font-size', '13');
       label.setAttribute('fill', textColor);
       if (row.ours) label.setAttribute('font-weight', '700');
       label.textContent = row.name;
@@ -98,15 +98,15 @@
         const val = row.values[m.idx];
         if (val === null) {
           const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          t.setAttribute('x', x0 + CHART_W + 6);
+          t.setAttribute('x', x0 + CHART_W + 8);
           t.setAttribute('y', y + BAR_H / 2 + 5);
-          t.setAttribute('font-size', '11');
+          t.setAttribute('font-size', '12');
           t.setAttribute('fill', mutedColor);
           t.textContent = 'n/a';
           svg.appendChild(t);
           return;
         }
-        const targetW = Math.max(2, (val / maxes[mi]) * CHART_W);
+        const targetW = Math.max(3, (val / maxes[mi]) * CHART_W);
         const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         rect.setAttribute('x', x0);
         rect.setAttribute('y', y);
@@ -114,44 +114,36 @@
         rect.setAttribute('height', BAR_H);
         rect.setAttribute('rx', 3);
         rect.setAttribute('fill', row.ours ? OURS_COLOR : BASE_COLOR);
+        rect.style.transition = `width 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) ${ri * 0.05}s`;
         svg.appendChild(rect);
-
-        // animate the bar growing
-        const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-        anim.setAttribute('attributeName', 'width');
-        anim.setAttribute('from', '0');
-        anim.setAttribute('to', String(targetW));
-        anim.setAttribute('dur', ANIM_DUR);
-        anim.setAttribute('fill', 'freeze');
-        anim.setAttribute('begin', `${ri * 0.04}s`);
-        anim.setAttribute('calcMode', 'spline');
-        anim.setAttribute('keySplines', '0.25 0.1 0.25 1');
-        anim.setAttribute('keyTimes', '0;1');
-        rect.appendChild(anim);
+        allRects.push({rect, targetW});
 
         const vt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        vt.setAttribute('x', x0 + targetW + 6);
+        vt.setAttribute('x', x0 + targetW + 8);
         vt.setAttribute('y', y + BAR_H / 2 + 5);
-        vt.setAttribute('font-size', '11');
+        vt.setAttribute('font-size', '12');
         vt.setAttribute('font-variant-numeric', 'tabular-nums');
         vt.setAttribute('fill', row.ours ? OURS_COLOR : textColor);
         if (row.ours) vt.setAttribute('font-weight', '700');
         vt.textContent = val.toFixed(m.prec);
         vt.style.opacity = '0';
-        vt.style.animation = `fadeIn 0.3s ${ri * 0.04 + 0.3}s forwards`;
+        vt.style.transition = `opacity 0.3s ease ${ri * 0.05 + 0.4}s`;
         svg.appendChild(vt);
+        // fade in the value text
+        requestAnimationFrame(() => { vt.style.opacity = '1'; });
       });
     });
 
-    // inject the fadeIn keyframe if not already present
-    if (!document.getElementById('chart-anim-style')) {
-      const style = document.createElement('style');
-      style.id = 'chart-anim-style';
-      style.textContent = '@keyframes fadeIn { to { opacity: 1; } }';
-      document.head.appendChild(style);
-    }
-
     container.appendChild(svg);
+
+    // trigger the bar grow after the SVG is in the DOM
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        allRects.forEach(({rect, targetW}) => {
+          rect.setAttribute('width', targetW);
+        });
+      });
+    });
   }
 
   document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => buildChart(b.dataset.mode)));
