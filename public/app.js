@@ -9,9 +9,9 @@
 
   /* ── fade helper ── */
   function fadeSwap(el, updateFn) {
-    el.style.transition = 'opacity 0.25s ease';
+    el.style.transition = 'opacity 0.4s ease';
     el.style.opacity = '0';
-    setTimeout(() => { updateFn(); el.style.opacity = '1'; }, 260);
+    setTimeout(() => { updateFn(); el.style.transition = 'opacity 0.4s ease'; el.style.opacity = '1'; }, 420);
   }
 
   /* ── improvement cards ── */
