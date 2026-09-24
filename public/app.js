@@ -171,21 +171,24 @@
     });
   }
 
-  /* ── force autoplay on mobile (iOS sometimes ignores autoplay attribute) ── */
-  const vids = document.querySelectorAll('video[autoplay]');
+  /* ── force autoplay on mobile (iOS ignores autoplay even with muted+playsinline) ── */
+  const vids = [...document.querySelectorAll('video[autoplay]')];
   if (vids.length) {
-    const playVisible = () => {
-      vids.forEach(v => {
-        const r = v.getBoundingClientRect();
-        if (r.bottom > 0 && r.top < window.innerHeight && v.paused) {
-          v.play().catch(() => {});
-        }
-      });
-    };
-    window.addEventListener('scroll', playVisible, {passive: true});
-    window.addEventListener('touchstart', playVisible, {once: true, passive: true});
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) playVisible(); });
-    playVisible();
+    const tryPlay = v => { v.muted = true; v.play().catch(() => {}); };
+    const playAll = () => { vids.forEach(v => { if (v.paused) tryPlay(v); }); };
+    // IntersectionObserver: play when visible, pause when not
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting && e.target.paused) tryPlay(e.target); });
+      }, {threshold: 0.15});
+      vids.forEach(v => io.observe(v));
+    }
+    // user gesture fallback: first touch/click/scroll plays everything
+    ['touchstart','click','scroll'].forEach(evt => {
+      document.addEventListener(evt, playAll, {once: true, passive: true});
+    });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) playAll(); });
+    playAll();
   }
 
   /* ── smooth scroll with ease-out deceleration ── */
