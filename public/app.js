@@ -186,4 +186,41 @@
       if (trigger) trigger.focus();
     });
   }
+
+  /* ── smooth scroll with ease-out deceleration ── */
+  function smoothScrollTo(targetY, duration) {
+    const startY = window.scrollY;
+    const diff = targetY - startY;
+    if (Math.abs(diff) < 2) return;
+    const start = performance.now();
+    function step(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3);          // cubic ease-out: fast start, gentle stop
+      window.scrollTo(0, startY + diff * ease);
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  document.querySelectorAll('.site-header a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      const headerH = document.querySelector('.site-header').offsetHeight;
+      const y = target.getBoundingClientRect().top + window.scrollY - headerH - 12;
+      smoothScrollTo(y, 900);
+      history.pushState(null, '', link.getAttribute('href'));
+    });
+  });
+  // also handle the hero Video button
+  document.querySelectorAll('.paper-button[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      const headerH = document.querySelector('.site-header').offsetHeight;
+      const y = target.getBoundingClientRect().top + window.scrollY - headerH - 12;
+      smoothScrollTo(y, 900);
+    });
+  });
 })();
