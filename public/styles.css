@@ -218,6 +218,9 @@ dialog::backdrop { background: var(--dialog-backdrop); }
   .capture-row .clip video { height: auto; width: 100%; }
   .sim-grid { grid-template-columns: repeat(2, 1fr); }
   .live-row { grid-template-columns: 1fr; }
+  .chart-heading { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .chart-container { min-height: auto !important; }
+  .chart-container svg { margin-bottom: 20px; }
 }
 .method-desc { margin-bottom: 24px; }
 .method-desc ol { margin: 8px 0 0; padding-left: 22px; }
