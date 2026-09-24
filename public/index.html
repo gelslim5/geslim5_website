@@ -10,21 +10,21 @@
   <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
   <title>GelSlim 5.0: Unifying Vision and Touch with a Single Fingertip Camera</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="stylesheet" href="styles.css?v=7">
   <script src="data.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#summary">Skip to content</a>
+  <a class="skip-link" href="#abstract">Skip to content</a>
   <header class="site-header">
     <nav aria-label="Page sections">
       <a href="#video">Video</a>
-      <a href="#summary">Summary</a>
+      <a href="#abstract">Abstract</a>
       <a href="#sensor">Sensor</a>
+      <a href="#data">Data</a>
       <a href="#method">Method</a>
       <a href="#results">Results</a>
       <a href="#insights">Insights</a>
-      <a href="#citation">Citation</a>
     </nav>
   </header>
 
@@ -66,15 +66,26 @@
       </figure>
     </section>
 
-    <section id="summary" class="section abstract-section" aria-labelledby="summary-title">
+    <section id="abstract" class="section abstract-section" aria-labelledby="abstract-title">
       <div class="prose">
-        <h2 id="summary-title">Summary</h2>
-        <ul class="summary-list">
-          <li><strong>A fingertip that touches and sees.</strong> One camera, one viewpoint, two modes.</li>
-          <li><strong>Task-specific fusion.</strong> Separate pose and geometry paths share a visual bottleneck.</li>
-          <li><strong>Better together.</strong> Paired input cuts depth MSE 61% and angular error 72% vs. touch alone.</li>
-        </ul>
-        <p class="abstract-link">Details in the <a href="assets/paper.pdf">paper</a>.</p>
+        <h2 id="abstract-title">Abstract</h2>
+        <p>Vision and touch provide complementary cues for object pose and local contact geometry, but external cameras are often occluded at the contact site. We present GelSlim 5.0, a fingertip sensor that acquires visual and tactile observations with one fixed camera and a continuous UV-responsive contact layer. By switching illumination, the camera sequentially acquires through-membrane visual images and contact-sensitive tactile images from a shared viewpoint, avoiding inter-camera extrinsic calibration.</p>
+        <p>To combine these observations, we introduce VisTacFusion, a multimodal transformer with separate prediction paths for planar object pose and contact geometry. Asymmetric bottleneck fusion incorporates visual context while preserving tactile spatial features for depth and surface-normal estimation. Modality dropout enables inference with paired inputs or either modality alone.</p>
+        <p>On real validation data from 12 known objects, paired inputs reduce depth MSE, angular error, and translation L₁ by 61.2%, 72.3%, and 61.3%, respectively, relative to tactile-only inference with the same model. Relative to visual-only inference, the corresponding reductions are 93.7%, 6.1%, and 8.6%.</p>
+      </div>
+    </section>
+
+    <section id="why" class="section wrap" aria-labelledby="why-title">
+      <h2 id="why-title">Vision and Touch Resolve Different Ambiguities</h2>
+      <div class="clip-row">
+        <figure class="clip">
+          <video autoplay muted loop playsinline preload="auto" width="448" height="448"><source src="assets/clips/ambiguity-vision.mp4" type="video/mp4"></video>
+          <figcaption><strong>Before contact.</strong> Vision gives global object context but no contact geometry.</figcaption>
+        </figure>
+        <figure class="clip">
+          <video autoplay muted loop playsinline preload="auto" width="448" height="448"><source src="assets/clips/ambiguity-tactile.mp4" type="video/mp4"></video>
+          <figcaption><strong>At contact.</strong> Touch captures local structure, but similar patches can come from different poses.</figcaption>
+        </figure>
       </div>
     </section>
 
@@ -89,14 +100,18 @@
           </a>
           <figcaption><strong>Hardware.</strong> (a) Assembly. (b) UV on: opaque; UV off: transparent. (c) Prototype in both modes.</figcaption>
         </figure>
-        <figure class="research-figure observations-figure">
-          <a href="assets/observations.webp" class="zoomable" data-zoom aria-label="Enlarge the common-view observation examples">
-            <img src="assets/observations.webp" width="2095" height="1114" alt="Tactile (UV on) and proximity (UV off) images of a hex nut, a key, a hex key, and a screw, each pair captured from the same fixed camera." loading="lazy">
-            <span class="zoom-hint">Enlarge figure ↗</span>
-          </a>
-          <figcaption><strong>Same camera, two views.</strong> Tactile (top) and proximity (bottom).</figcaption>
+      </div>
+      <div class="clip-row">
+        <figure class="clip">
+          <video autoplay muted loop playsinline preload="auto" width="448" height="448"><source src="assets/clips/mode-hexnut.mp4" type="video/mp4"></video>
+          <figcaption>Hex nut</figcaption>
+        </figure>
+        <figure class="clip">
+          <video autoplay muted loop playsinline preload="auto" width="448" height="448"><source src="assets/clips/mode-screw.mp4" type="video/mp4"></video>
+          <figcaption>Screw</figcaption>
         </figure>
       </div>
+      <p class="clip-note">UV illumination switches the observation modality; the camera and lens stay fixed.</p>
       <div class="highlights" role="list">
         <div class="highlight" role="listitem">
           <h3>Continuous contact film</h3>
@@ -111,6 +126,33 @@
           <p>45,000+ presses at 20 N without degradation.</p>
         </div>
       </div>
+    </section>
+
+    <section id="data" class="section wrap" aria-labelledby="data-title">
+      <h2 id="data-title">Data</h2>
+      <h3 class="sub-title">Real-world acquisition</h3>
+      <div class="capture-row">
+        <figure class="clip">
+          <video autoplay muted loop playsinline preload="auto" width="428" height="720"><source src="assets/clips/robot-capture.mp4" type="video/mp4"></video>
+          <figcaption>Robot-driven contact sampling (1.5×)</figcaption>
+        </figure>
+        <figure class="clip">
+          <video autoplay muted loop playsinline preload="auto" width="448" height="448"><source src="assets/clips/sensor-view.mp4" type="video/mp4"></video>
+          <figcaption>Sensor view: sequential tactile and proximity capture from one viewpoint</figcaption>
+        </figure>
+      </div>
+      <h3 class="sub-title">Simulation</h3>
+      <div class="sim-grid">
+        <figure class="clip"><video autoplay muted loop playsinline preload="auto" width="336" height="336"><source src="assets/clips/sim-12.mp4" type="video/mp4"></video></figure>
+        <figure class="clip"><video autoplay muted loop playsinline preload="auto" width="336" height="336"><source src="assets/clips/sim-14.mp4" type="video/mp4"></video></figure>
+        <figure class="clip"><video autoplay muted loop playsinline preload="auto" width="336" height="336"><source src="assets/clips/sim-16.mp4" type="video/mp4"></video></figure>
+        <figure class="clip"><video autoplay muted loop playsinline preload="auto" width="336" height="336"><source src="assets/clips/sim-18.mp4" type="video/mp4"></video></figure>
+        <figure class="clip"><video autoplay muted loop playsinline preload="auto" width="336" height="336"><source src="assets/clips/sim-13.mp4" type="video/mp4"></video></figure>
+        <figure class="clip"><video autoplay muted loop playsinline preload="auto" width="336" height="336"><source src="assets/clips/sim-15.mp4" type="video/mp4"></video></figure>
+        <figure class="clip"><video autoplay muted loop playsinline preload="auto" width="336" height="336"><source src="assets/clips/sim-17.mp4" type="video/mp4"></video></figure>
+        <figure class="clip"><video autoplay muted loop playsinline preload="auto" width="336" height="336"><source src="assets/clips/sim-19.mp4" type="video/mp4"></video></figure>
+      </div>
+      <p class="clip-note">Top: rendered tactile contact. Bottom: rendered visual view. Sample pose and contact → render visual, depth, normal → generate tactile appearance → export paired sample.</p>
     </section>
 
     <section id="method" class="section wrap" aria-labelledby="method-title">
@@ -196,6 +238,20 @@
       </figure>
     </section>
 
+    <section id="live" class="section wrap" aria-labelledby="live-title">
+      <h2 id="live-title">Live Predictions</h2>
+      <div class="live-row">
+        <figure class="clip">
+          <video autoplay muted loop playsinline preload="auto" width="894" height="672"><source src="assets/clips/live-geometry.mp4" type="video/mp4"></video>
+          <figcaption><strong>Contact geometry from touch.</strong> Rows: predicted depth, predicted normals, tactile input.</figcaption>
+        </figure>
+        <figure class="clip">
+          <video autoplay muted loop playsinline preload="auto" width="448" height="448"><source src="assets/clips/live-pose-1.mp4" type="video/mp4"></video>
+          <figcaption><strong>Planar pose from vision.</strong> Overlay shows the estimate and the error against the robot ground truth.</figcaption>
+        </figure>
+      </div>
+    </section>
+
     <section id="insights" class="section wrap" aria-labelledby="insights-title">
       <h2 id="insights-title">What Mattered</h2>
       <div class="insights-grid">
@@ -223,19 +279,6 @@
       </div>
     </section>
 
-    <section id="citation" class="section wrap" aria-labelledby="citation-title">
-      <h2 id="citation-title">Citation</h2>
-      <div class="bibtex-block">
-        <button type="button" class="copy-bibtex" aria-label="Copy BibTeX to clipboard">Copy</button>
-        <pre><code>@inproceedings{gelslim5,
-  title     = {GelSlim 5.0: Unifying Vision and Touch
-               with a Single Fingertip Camera},
-  author    = {Anonymous},
-  booktitle = {Under review},
-  year      = {2026}
-}</code></pre>
-      </div>
-    </section>
   </main>
 
   <footer class="site-footer"><span>GelSlim 5.0</span><a href="assets/paper.pdf">Paper</a><a href="#top">Back to top ↑</a></footer>
