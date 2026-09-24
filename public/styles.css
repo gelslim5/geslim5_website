@@ -192,3 +192,6 @@ dialog::backdrop { background: var(--dialog-backdrop); }
   .research-figure, .metric-grid { break-inside: avoid; }
   .abstract-section { background: white; border: none; }
 }
+
+.video-figure { max-width: 960px; margin: 0 auto; }
+.video-figure video { display: block; width: 100%; height: auto; border-radius: 8px; background: #000; }
