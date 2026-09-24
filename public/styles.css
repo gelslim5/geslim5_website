@@ -224,4 +224,4 @@ dialog::backdrop { background: var(--dialog-backdrop); }
 .chart-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-block: 44px 24px; }
 .chart-container { overflow-x: auto; }
 .chart-container svg { font-family: var(--font); }
-.metric-value, .metric-detail, .chart-container { transition: opacity 0.25s ease; }
+.chart-container { transition: opacity 0.3s ease; }
