@@ -83,7 +83,7 @@ caption { text-align: left; font-size: 13px; padding-bottom: 12px; color: var(--
 .metric-value { margin-top: 9px; font-size: 29px; font-weight: 500; line-height: 1.5; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .metric-value > span:last-child { font-size: 12px; color: var(--muted); font-weight: 400; }
 .metric-detail { font-size: 12px; color: var(--muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
-.result-context { font-size: 13px; color: var(--muted); max-width: 880px; margin: 14px auto 0; }
+.result-context { font-size: 13px; color: var(--muted); max-width: 880px; margin: 18px auto 0; }
 .table-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-block: 38px 19px; }
 .table-controls { display: flex; align-items: center; gap: 11px; font-size: 13px; }
 .results-table-container table { text-align: right; min-width: 750px; font-size: 14px; }
@@ -221,6 +221,6 @@ dialog::backdrop { background: var(--dialog-backdrop); }
 .method-desc { margin-bottom: 24px; }
 .method-desc ol { margin: 8px 0 0; padding-left: 22px; }
 .method-desc li { margin-bottom: 4px; }
-.chart-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-block: 38px 19px; }
+.chart-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-block: 44px 24px; }
 .chart-container { overflow-x: auto; }
 .chart-container svg { font-family: var(--font); }
