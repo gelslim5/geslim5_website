@@ -183,7 +183,8 @@ dialog::backdrop { background: var(--dialog-backdrop); }
   .paper-button { background: #ddd; color: #111; }
   .paper-button.disabled { background: #555; color: #999; }
   .skip-link { background: var(--bg); color: var(--ink); }
-  .site-header { background: rgba(17,17,17,0.72); border-bottom-color: rgba(100,100,100,0.3); }
+  .site-header { background: rgba(40,40,40,0.65); border-bottom-color: rgba(120,120,120,0.25); }
+  .site-header a { color: #ccc; }
   .zoomable img, .dialog-scroll img { background: #fff; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
