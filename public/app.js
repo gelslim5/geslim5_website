@@ -14,9 +14,8 @@
     setTimeout(() => { updateFn(); el.style.transition = 'opacity 0.3s ease'; el.style.opacity = '1'; }, 320);
   }
 
-  /* ── improvement cards: only fade the changing numbers ── */
-  const fadeIds = ['depth-improvement', 'depth-detail', 'angle-improvement', 'angle-detail', 'translation-improvement', 'translation-detail'];
-  const fadeEls = fadeIds.map(id => document.getElementById(id));
+  /* ── improvement cards: fade the value row + detail ── */
+  const fadeEls = document.querySelectorAll('.metric-value, .metric-detail');
   function setBaseline(mode) {
     const baseline = ours(mode);
     document.querySelectorAll('[data-baseline]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.baseline === mode)));
