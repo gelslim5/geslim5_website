@@ -7,13 +7,23 @@
   const ours = mode => data.tables[mode].find(row => row.ours).values;
   const paired = ours('both');
 
+  /* ── fade helper ── */
+  function fadeSwap(el, updateFn) {
+    el.style.transition = 'opacity 0.25s ease';
+    el.style.opacity = '0';
+    setTimeout(() => { updateFn(); el.style.opacity = '1'; }, 260);
+  }
+
   /* ── improvement cards ── */
+  const metricGrid = document.querySelector('.metric-grid');
   function setBaseline(mode) {
     const baseline = ours(mode);
     document.querySelectorAll('[data-baseline]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.baseline === mode)));
-    [{id:'depth',i:0,u:' mm²'},{id:'angle',i:3,u:'°'},{id:'translation',i:4,u:''}].forEach(({id,i,u}) => {
-      document.getElementById(`${id}-improvement`).textContent = (100*(1-paired[i]/baseline[i])).toFixed(1);
-      document.getElementById(`${id}-detail`).textContent = `${baseline[i].toFixed(precision[i])}${u} → ${paired[i].toFixed(precision[i])}${u}`;
+    fadeSwap(metricGrid, () => {
+      [{id:'depth',i:0,u:' mm²'},{id:'angle',i:3,u:'°'},{id:'translation',i:4,u:''}].forEach(({id,i,u}) => {
+        document.getElementById(`${id}-improvement`).textContent = (100*(1-paired[i]/baseline[i])).toFixed(1);
+        document.getElementById(`${id}-detail`).textContent = `${baseline[i].toFixed(precision[i])}${u} → ${paired[i].toFixed(precision[i])}${u}`;
+      });
     });
   }
   document.querySelectorAll('[data-baseline]').forEach(b => b.addEventListener('click', () => setBaseline(b.dataset.baseline)));
@@ -33,7 +43,7 @@
   const VALUE_W = 70;
   const CHART_W = 200;
   const COL_GAP = 44;
-  const HEADER_H = 42;
+  const HEADER_H = 52;
 
   function buildChart(mode) {
     document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
@@ -61,7 +71,7 @@
       const x = LABEL_W + mi * (CHART_W + VALUE_W + COL_GAP);
       const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       t.setAttribute('x', x + CHART_W / 2);
-      t.setAttribute('y', 15);
+      t.setAttribute('y', 16);
       t.setAttribute('text-anchor', 'middle');
       t.setAttribute('font-size', '13');
       t.setAttribute('font-weight', '600');
@@ -70,7 +80,7 @@
       svg.appendChild(t);
       const u = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       u.setAttribute('x', x + CHART_W / 2);
-      u.setAttribute('y', 30);
+      u.setAttribute('y', 34);
       u.setAttribute('text-anchor', 'middle');
       u.setAttribute('font-size', '10');
       u.setAttribute('fill', mutedColor);
@@ -146,7 +156,10 @@
     });
   }
 
-  document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => buildChart(b.dataset.mode)));
+  const chartContainer = document.getElementById('chart-container');
+  document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
+    fadeSwap(chartContainer, () => buildChart(b.dataset.mode));
+  }));
   buildChart('both');
 
   /* ── figure zoom dialog ── */
