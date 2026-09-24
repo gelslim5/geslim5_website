@@ -10,7 +10,7 @@
   <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
   <title>GelSlim 5.0: Unifying Vision and Touch with a Single Fingertip Camera</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=7">
+  <link rel="stylesheet" href="styles.css?v=8">
   <script src="data.js" defer></script>
   <script src="app.js" defer></script>
 </head>
@@ -18,20 +18,20 @@
   <a class="skip-link" href="#abstract">Skip to content</a>
   <header class="site-header">
     <nav aria-label="Page sections">
-      <a href="#video">Video</a>
       <a href="#abstract">Abstract</a>
       <a href="#sensor">Sensor</a>
       <a href="#data">Data</a>
       <a href="#method">Method</a>
       <a href="#results">Results</a>
       <a href="#insights">Insights</a>
+      <a href="#video">Video</a>
     </nav>
   </header>
 
   <main id="top">
     <section class="hero wrap" aria-labelledby="paper-title">
       <h1 id="paper-title">GelSlim 5.0: Unifying Vision and Touch<br class="title-break"> with a Single Fingertip Camera</h1>
-      <p class="tagline">One fingertip camera. Two observation states. Object pose and contact geometry from either, or both.</p>
+      <p class="authors"></p>
       <div class="paper-links">
         <a class="paper-button" href="assets/paper.pdf">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6M9 16h6"/></svg>
@@ -56,16 +56,6 @@
       </figure>
     </section>
 
-    <section id="video" class="section wrap" aria-labelledby="video-title">
-      <h2 id="video-title">Video</h2>
-      <figure class="video-figure">
-        <video controls preload="metadata" playsinline poster="assets/demo-poster.jpg" width="1920" height="1080">
-          <source src="assets/demo.mp4" type="video/mp4">
-          Your browser does not support embedded video. <a href="assets/demo.mp4">Download the video</a>.
-        </video>
-      </figure>
-    </section>
-
     <section id="abstract" class="section abstract-section" aria-labelledby="abstract-title">
       <div class="prose">
         <h2 id="abstract-title">Abstract</h2>
@@ -80,18 +70,17 @@
       <div class="clip-row">
         <figure class="clip">
           <video autoplay muted loop playsinline preload="auto" width="448" height="448"><source src="assets/clips/ambiguity-vision.mp4" type="video/mp4"></video>
-          <figcaption><strong>Before contact.</strong> Vision gives global object context but no contact geometry.</figcaption>
+          <figcaption>Vision</figcaption>
         </figure>
         <figure class="clip">
           <video autoplay muted loop playsinline preload="auto" width="448" height="448"><source src="assets/clips/ambiguity-tactile.mp4" type="video/mp4"></video>
-          <figcaption><strong>At contact.</strong> Touch captures local structure, but similar patches can come from different poses.</figcaption>
+          <figcaption>Touch</figcaption>
         </figure>
       </div>
     </section>
 
     <section id="sensor" class="section wrap" aria-labelledby="sensor-title">
       <h2 id="sensor-title">GelSlim 5.0 Sensor</h2>
-      <p class="section-intro">A clear elastomer topped with a thin UV-responsive layer. UV LEDs, switched in sync with the camera, toggle between touch and sight.</p>
       <div class="sensor-grid">
         <figure class="research-figure sensor-figure">
           <a href="assets/sensor.webp" class="zoomable" data-zoom aria-label="Enlarge the sensor hardware figure">
@@ -112,33 +101,19 @@
         </figure>
       </div>
       <p class="clip-note">UV illumination switches the observation modality; the camera and lens stay fixed.</p>
-      <div class="highlights" role="list">
-        <div class="highlight" role="listitem">
-          <h3>Continuous contact film</h3>
-          <p>No windows, markers, or moving parts.</p>
-        </div>
-        <div class="highlight" role="listitem">
-          <h3>Shared viewpoint</h3>
-          <p>Both modes share pixels; no extrinsic calibration.</p>
-        </div>
-        <div class="highlight" role="listitem">
-          <h3>Durable</h3>
-          <p>45,000+ presses at 20 N without degradation.</p>
-        </div>
-      </div>
     </section>
 
     <section id="data" class="section wrap" aria-labelledby="data-title">
       <h2 id="data-title">Data</h2>
-      <h3 class="sub-title">Real-world acquisition</h3>
+      <h3 class="sub-title">Real</h3>
       <div class="capture-row">
         <figure class="clip">
           <video autoplay muted loop playsinline preload="auto" width="428" height="720"><source src="assets/clips/robot-capture.mp4" type="video/mp4"></video>
-          <figcaption>Robot-driven contact sampling (1.5×)</figcaption>
+          <figcaption></figcaption>
         </figure>
         <figure class="clip">
           <video autoplay muted loop playsinline preload="auto" width="448" height="448"><source src="assets/clips/sensor-view.mp4" type="video/mp4"></video>
-          <figcaption>Sensor view: sequential tactile and proximity capture from one viewpoint</figcaption>
+          <figcaption>Sensor view</figcaption>
         </figure>
       </div>
       <h3 class="sub-title">Simulation</h3>
@@ -152,7 +127,7 @@
         <figure class="clip"><video autoplay muted loop playsinline preload="auto" width="336" height="336"><source src="assets/clips/sim-17.mp4" type="video/mp4"></video></figure>
         <figure class="clip"><video autoplay muted loop playsinline preload="auto" width="336" height="336"><source src="assets/clips/sim-19.mp4" type="video/mp4"></video></figure>
       </div>
-      <p class="clip-note">Top: rendered tactile contact. Bottom: rendered visual view. Sample pose and contact → render visual, depth, normal → generate tactile appearance → export paired sample.</p>
+      <p class="clip-note">Top: rendered tactile contact. Bottom: rendered visual view.</p>
     </section>
 
     <section id="method" class="section wrap" aria-labelledby="method-title">
@@ -250,6 +225,16 @@
           <figcaption><strong>Planar pose from vision.</strong> Overlay shows the estimate and the error against the robot ground truth.</figcaption>
         </figure>
       </div>
+    </section>
+
+    <section id="video" class="section wrap" aria-labelledby="video-title">
+      <h2 id="video-title">Video</h2>
+      <figure class="video-figure">
+        <video controls preload="metadata" playsinline poster="assets/demo-poster.jpg" width="1920" height="1080">
+          <source src="assets/demo.mp4" type="video/mp4">
+          Your browser does not support embedded video. <a href="assets/demo.mp4">Download the video</a>.
+        </video>
+      </figure>
     </section>
 
     <section id="insights" class="section wrap" aria-labelledby="insights-title">
