@@ -10,7 +10,7 @@
   <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
   <title>GelSlim 5.0: Unifying Vision and Touch with a Single Fingertip Camera</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=8">
+  <link rel="stylesheet" href="styles.css?v=9">
   <script src="data.js" defer></script>
   <script src="app.js" defer></script>
 </head>
@@ -23,7 +23,6 @@
       <a href="#data">Data</a>
       <a href="#method">Method</a>
       <a href="#results">Results</a>
-      <a href="#insights">Insights</a>
       <a href="#video">Video</a>
     </nav>
   </header>
@@ -109,7 +108,7 @@
       <div class="capture-row">
         <figure class="clip">
           <video autoplay muted loop playsinline preload="auto" width="428" height="720"><source src="assets/clips/robot-capture.mp4" type="video/mp4"></video>
-          <figcaption></figcaption>
+          <figcaption>Side view</figcaption>
         </figure>
         <figure class="clip">
           <video autoplay muted loop playsinline preload="auto" width="448" height="448"><source src="assets/clips/sensor-view.mp4" type="video/mp4"></video>
@@ -132,34 +131,24 @@
 
     <section id="method" class="section wrap" aria-labelledby="method-title">
       <h2 id="method-title">VisTacFusion</h2>
-      <p class="section-intro">Separate paths for pose and geometry, both conditioned by a compact visual bottleneck.</p>
+      <div class="method-desc reading-width">
+        <p>VisTacFusion fuses visual and tactile features through 16 bottleneck tokens, then uses separate prediction paths:</p>
+        <ol>
+          <li>DPT decoder for contact depth and surface normals.</li>
+          <li>MLP for 2D pose.</li>
+        </ol>
+        <p>Modality dropout allows the same model to operate with paired or single-modality inputs.</p>
+      </div>
       <figure class="research-figure architecture">
         <a href="assets/architecture.png" class="zoomable" data-zoom aria-label="Enlarge the VisTacFusion architecture">
           <img src="assets/architecture.png" width="4640" height="2682" alt="VisTacFusion architecture: frozen SITR and MAE encoders, asymmetric bottleneck fusion, gated visual conditioning, a DPT geometry decoder, and a pose MLP." loading="lazy">
           <span class="zoom-hint">Enlarge figure ↗</span>
         </a>
-        <figcaption><strong>Architecture.</strong> Pose reads the query state Q<sub>4</sub>; geometry decodes tactile features conditioned on B<sub>4</sub>.</figcaption>
       </figure>
-      <div class="highlights" role="list">
-        <div class="highlight" role="listitem">
-          <h3>Frozen encoders</h3>
-          <p>SITR for touch, MAE for vision.</p>
-        </div>
-        <div class="highlight" role="listitem">
-          <h3>Pose from queries</h3>
-          <p>Tactile queries attend to a 16-token visual bottleneck.</p>
-        </div>
-        <div class="highlight" role="listitem">
-          <h3>Geometry from features</h3>
-          <p>Gated visual updates feed a DPT decoder.</p>
-        </div>
-      </div>
-      <p class="method-note reading-width">Modality dropout: one model runs on vision, touch, or both.</p>
     </section>
 
     <section id="results" class="section wrap" aria-labelledby="results-title">
       <h2 id="results-title">Results</h2>
-      <p class="section-intro">Real validation data, 12 objects.</p>
       <div class="comparison-toolbar">
         <p>Paired-input improvement over:</p>
         <div class="segmented" role="group" aria-label="Select the single-modality baseline">
@@ -186,23 +175,15 @@
       </div>
       <p class="result-context">Same model, different inputs. The pair is best on every metric.</p>
 
-      <div class="table-heading">
+      <div class="chart-heading">
         <h3>Comparison with baselines</h3>
-        <div class="table-controls"><span>Input:</span><div class="segmented" role="group" aria-label="Select the table input configuration">
+        <div class="table-controls"><span>Input:</span><div class="segmented" role="group" aria-label="Select the chart input configuration">
           <button type="button" data-mode="both" aria-pressed="true">Both</button>
           <button type="button" data-mode="tactile" aria-pressed="false">Tactile</button>
           <button type="button" data-mode="visual" aria-pressed="false">Vision</button>
         </div></div>
       </div>
-      <div class="results-table-container table-scroll" tabindex="0" role="region" aria-label="Model comparison table; scroll horizontally on small screens">
-        <table id="results-table">
-          <caption id="table-caption">Paired visual and tactile input</caption>
-          <thead><tr><th scope="col">Model</th><th scope="col">Depth MSE<br><span>mm² ↓</span></th><th scope="col">Normal MSE<br><span>↓</span></th><th scope="col">Rotation L₁<br><span>↓</span></th><th scope="col">Angular error<br><span>degrees ↓</span></th><th scope="col">Translation L₁<br><span>normalized ↓</span></th></tr></thead>
-          <tbody id="results-body"><tr><th scope="row">VisTacFusion</th><td>0.0066</td><td>0.0074</td><td>0.0129</td><td>0.652</td><td>0.0053</td></tr></tbody>
-        </table>
-      </div>
-      <p class="table-note">Lower is better; bold is best. † Same model across input modes. Details in Table II of the paper.</p>
-      <noscript><p>The complete results are available in Table II of the <a href="assets/paper.pdf">paper</a>. Enable JavaScript to switch input configurations on this page.</p></noscript>
+      <div id="chart-container" class="chart-container" aria-live="polite"></div>
 
       <figure class="research-figure qualitative-figure">
         <a class="zoomable" data-zoom href="assets/qualitative.jpg" aria-label="Enlarge the qualitative comparison">
@@ -214,7 +195,7 @@
     </section>
 
     <section id="live" class="section wrap" aria-labelledby="live-title">
-      <h2 id="live-title">Live Predictions</h2>
+      <h2 id="live-title">Live Real Predictions</h2>
       <div class="live-row">
         <figure class="clip">
           <video autoplay muted loop playsinline preload="auto" width="894" height="672"><source src="assets/clips/live-geometry.mp4" type="video/mp4"></video>
@@ -222,7 +203,7 @@
         </figure>
         <figure class="clip">
           <video autoplay muted loop playsinline preload="auto" width="448" height="448"><source src="assets/clips/live-pose-1.mp4" type="video/mp4"></video>
-          <figcaption><strong>Planar pose from vision.</strong> Overlay shows the estimate and the error against the robot ground truth.</figcaption>
+          <figcaption><strong>Planar pose from vision.</strong></figcaption>
         </figure>
       </div>
     </section>
@@ -237,32 +218,6 @@
       </figure>
     </section>
 
-    <section id="insights" class="section wrap" aria-labelledby="insights-title">
-      <h2 id="insights-title">What Mattered</h2>
-      <div class="insights-grid">
-        <figure class="research-figure ratio-figure">
-          <a href="assets/data-mixing.png" data-zoom class="zoomable" aria-label="Enlarge the data-mixing sweep">
-            <img src="assets/data-mixing.png" width="1035" height="795" alt="Depth MSE, angular error, and translation error across real-to-simulation mixing ratios. Stars mark 1:1.27." loading="lazy">
-            <span class="zoom-hint">Enlarge figure ↗</span>
-          </a>
-          <figcaption><strong>Real–simulation data mixing.</strong> Stars mark the 1:1.27 ratio used in the main experiments.</figcaption>
-        </figure>
-        <div class="takeaways">
-          <div class="takeaway">
-            <h3>Simulation helps, up to a point</h3>
-            <p>Sim co-training beats real-only; gains stop past 1:1.27.</p>
-          </div>
-          <div class="takeaway">
-            <h3>MAE is the visual encoder to beat</h3>
-            <p>Best depth and angle with every tactile encoder.</p>
-          </div>
-          <div class="takeaway">
-            <h3>Asymmetric fusion helps pose</h3>
-            <p>Angular error 0.747° → 0.652° vs. symmetric MBT.</p>
-          </div>
-        </div>
-      </div>
-    </section>
 
   </main>
 

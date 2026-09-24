@@ -216,3 +216,9 @@ dialog::backdrop { background: var(--dialog-backdrop); }
   .sim-grid { grid-template-columns: repeat(2, 1fr); }
   .live-row { grid-template-columns: 1fr; }
 }
+.method-desc { margin-bottom: 24px; }
+.method-desc ol { margin: 8px 0 0; padding-left: 22px; }
+.method-desc li { margin-bottom: 4px; }
+.chart-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-block: 38px 19px; }
+.chart-container { overflow-x: auto; }
+.chart-container svg { font-family: var(--font); }
