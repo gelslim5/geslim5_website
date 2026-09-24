@@ -32,7 +32,7 @@ button { font: inherit; cursor: pointer; }
 .paper-button.disabled { background: #b0b0b0; cursor: default; pointer-events: none; }
 .paper-button.disabled small { font-size: 11px; opacity: .7; }
 .hero-figure { max-width: 640px; margin-inline: auto; }
-.hero-figure > img { width: 100%; }
+.hero-figure > img { width: 100%; background: #fff; border-radius: 10px; padding: 10px; }
 figcaption { font-size: 14px; line-height: 1.75; margin-top: 18px; color: var(--muted); }
 figcaption strong { font-weight: 600; }
 .hero-figure figcaption { max-width: 900px; margin-inline: auto; }
@@ -47,7 +47,7 @@ figcaption strong { font-weight: 600; }
 .research-figure { margin-block: 29px; }
 .research-figure figcaption { max-width: 880px; margin-inline: auto; }
 .zoomable { display: block; position: relative; padding-bottom: 31px; color: var(--link); cursor: zoom-in; }
-.zoomable img { width: 100%; background: var(--bg); }
+.zoomable img { width: 100%; background: #fff; border-radius: 10px; padding: 12px; }
 .zoom-hint { position: absolute; bottom: 0; right: 0; font-size: 12px; text-decoration: underline; }
 .zoomable:hover .zoom-hint { color: #094367; }
 .research-figure figcaption { margin-top: 8px; }
@@ -114,7 +114,7 @@ dialog::backdrop { background: var(--dialog-backdrop); }
 #close-dialog { position: absolute; right: 15px; top: 8px; padding: 5px 10px; border: 0; border-radius: 3px; background: var(--pale); color: var(--ink); font-size: 13px; }
 #close-dialog span { font-size: 20px; padding-left: 8px; }
 .dialog-scroll { overflow: auto; max-height: 77vh; }
-.dialog-scroll img { width: 100%; min-width: 850px; max-width: none; background: #fff; }
+.dialog-scroll img { width: 100%; min-width: 850px; max-width: none; background: #fff; border-radius: 10px; padding: 12px; }
 #figure-description { font-size: 12px; color: var(--muted); margin-top: 10px; }
 .dialog-open { overflow: hidden; }
 @media (max-width: 960px) {
