@@ -47,14 +47,16 @@
   const COL_GAP = 44;
   const HEADER_H = 52;
 
-  function buildChart(mode) {
-    document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
-    const rows = data.tables[mode];
-    const container = document.getElementById('chart-container');
-    container.innerHTML = '';
+  const isMobile = () => window.innerWidth < 680;
 
-    const totalW = LABEL_W + metrics.length * (CHART_W + VALUE_W) + (metrics.length - 1) * COL_GAP;
-    const totalH = HEADER_H + rows.length * (BAR_H + ROW_GAP) - ROW_GAP + 12;
+  function makeSVG(rows, metricList, labelW, chartW, valueW, colGap, headerH, barH, rowGap) {
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const textColor = isDark ? '#e0e0e0' : '#363636';
+    const mutedColor = isDark ? '#999' : '#656565';
+    const headerColor = isDark ? '#e0e0e0' : '#222';
+
+    const totalW = labelW + metricList.length * (chartW + valueW) + (metricList.length - 1) * colGap;
+    const totalH = headerH + rows.length * (barH + rowGap) - rowGap + 12;
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', `0 0 ${totalW} ${totalH}`);
@@ -63,99 +65,81 @@
     svg.style.display = 'block';
     svg.style.margin = '0 auto';
 
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const textColor = isDark ? '#e0e0e0' : '#363636';
-    const mutedColor = isDark ? '#999' : '#656565';
-    const headerColor = isDark ? '#e0e0e0' : '#222';
-
-    // headers
-    metrics.forEach((m, mi) => {
-      const x = LABEL_W + mi * (CHART_W + VALUE_W + COL_GAP);
+    metricList.forEach((m, mi) => {
+      const x = labelW + mi * (chartW + valueW + colGap);
       const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      t.setAttribute('x', x + CHART_W / 2);
-      t.setAttribute('y', 16);
-      t.setAttribute('text-anchor', 'middle');
-      t.setAttribute('font-size', '13');
-      t.setAttribute('font-weight', '600');
-      t.setAttribute('fill', headerColor);
-      t.textContent = m.key;
-      svg.appendChild(t);
+      t.setAttribute('x', x + chartW / 2); t.setAttribute('y', 16);
+      t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', '13');
+      t.setAttribute('font-weight', '600'); t.setAttribute('fill', headerColor);
+      t.textContent = m.key; svg.appendChild(t);
       const u = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      u.setAttribute('x', x + CHART_W / 2);
-      u.setAttribute('y', 34);
-      u.setAttribute('text-anchor', 'middle');
-      u.setAttribute('font-size', '10');
-      u.setAttribute('fill', mutedColor);
-      u.textContent = m.unit;
-      svg.appendChild(u);
+      u.setAttribute('x', x + chartW / 2); u.setAttribute('y', 34);
+      u.setAttribute('text-anchor', 'middle'); u.setAttribute('font-size', '10');
+      u.setAttribute('fill', mutedColor); u.textContent = m.unit; svg.appendChild(u);
     });
 
-    const maxes = metrics.map(m => Math.max(...rows.map(r => r.values[m.idx]).filter(v => v !== null)));
+    const maxes = metricList.map(m => Math.max(...rows.map(r => r.values[m.idx]).filter(v => v !== null)));
     const allRects = [];
 
     rows.forEach((row, ri) => {
-      const y = HEADER_H + ri * (BAR_H + ROW_GAP);
+      const y = headerH + ri * (barH + rowGap);
       const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      label.setAttribute('x', LABEL_W - 10);
-      label.setAttribute('y', y + BAR_H / 2 + 5);
-      label.setAttribute('text-anchor', 'end');
-      label.setAttribute('font-size', '13');
+      label.setAttribute('x', labelW - 10); label.setAttribute('y', y + barH / 2 + 5);
+      label.setAttribute('text-anchor', 'end'); label.setAttribute('font-size', '13');
       label.setAttribute('fill', textColor);
       if (row.ours) label.setAttribute('font-weight', '700');
-      label.textContent = row.name;
-      svg.appendChild(label);
+      label.textContent = row.name; svg.appendChild(label);
 
-      metrics.forEach((m, mi) => {
-        const x0 = LABEL_W + mi * (CHART_W + VALUE_W + COL_GAP);
+      metricList.forEach((m, mi) => {
+        const x0 = labelW + mi * (chartW + valueW + colGap);
         const val = row.values[m.idx];
         if (val === null) {
           const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          t.setAttribute('x', x0 + CHART_W + 8);
-          t.setAttribute('y', y + BAR_H / 2 + 5);
-          t.setAttribute('font-size', '12');
-          t.setAttribute('fill', mutedColor);
-          t.textContent = 'n/a';
-          svg.appendChild(t);
-          return;
+          t.setAttribute('x', x0 + chartW + 8); t.setAttribute('y', y + barH / 2 + 5);
+          t.setAttribute('font-size', '12'); t.setAttribute('fill', mutedColor);
+          t.textContent = 'n/a'; svg.appendChild(t); return;
         }
-        const targetW = Math.max(3, (val / maxes[mi]) * CHART_W);
+        const targetW = Math.max(3, (val / maxes[mi]) * chartW);
         const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        rect.setAttribute('x', x0);
-        rect.setAttribute('y', y);
-        rect.setAttribute('width', 0);
-        rect.setAttribute('height', BAR_H);
-        rect.setAttribute('rx', 3);
-        rect.setAttribute('fill', row.ours ? OURS_COLOR : BASE_COLOR);
+        rect.setAttribute('x', x0); rect.setAttribute('y', y);
+        rect.setAttribute('width', 0); rect.setAttribute('height', barH);
+        rect.setAttribute('rx', 3); rect.setAttribute('fill', row.ours ? OURS_COLOR : BASE_COLOR);
         rect.style.transition = `width 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) ${ri * 0.05}s`;
-        svg.appendChild(rect);
-        allRects.push({rect, targetW});
+        svg.appendChild(rect); allRects.push({rect, targetW});
 
         const vt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        vt.setAttribute('x', x0 + targetW + 8);
-        vt.setAttribute('y', y + BAR_H / 2 + 5);
-        vt.setAttribute('font-size', '12');
-        vt.setAttribute('font-variant-numeric', 'tabular-nums');
+        vt.setAttribute('x', x0 + targetW + 8); vt.setAttribute('y', y + barH / 2 + 5);
+        vt.setAttribute('font-size', '12'); vt.setAttribute('font-variant-numeric', 'tabular-nums');
         vt.setAttribute('fill', row.ours ? OURS_COLOR : textColor);
         if (row.ours) vt.setAttribute('font-weight', '700');
         vt.textContent = val.toFixed(m.prec);
-        vt.style.opacity = '0';
-        vt.style.transition = `opacity 0.3s ease ${ri * 0.05 + 0.4}s`;
+        vt.style.opacity = '0'; vt.style.transition = `opacity 0.3s ease ${ri * 0.05 + 0.4}s`;
         svg.appendChild(vt);
-        // fade in the value text
         requestAnimationFrame(() => { vt.style.opacity = '1'; });
       });
     });
+    return {svg, allRects};
+  }
 
-    container.appendChild(svg);
+  function buildChart(mode) {
+    document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+    const rows = data.tables[mode];
+    const container = document.getElementById('chart-container');
+    container.innerHTML = '';
 
-    // trigger the bar grow after the SVG is in the DOM
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        allRects.forEach(({rect, targetW}) => {
-          rect.setAttribute('width', targetW);
-        });
+    if (isMobile()) {
+      // mobile: one SVG per metric, stacked vertically
+      metrics.forEach(m => {
+        const {svg, allRects} = makeSVG(rows, [m], 120, 140, 60, 0, 52, 20, 10);
+        container.appendChild(svg);
+        requestAnimationFrame(() => { requestAnimationFrame(() => { allRects.forEach(({rect, targetW}) => { rect.setAttribute('width', targetW); }); }); });
       });
-    });
+    } else {
+      // desktop: all 3 metrics side by side
+      const {svg, allRects} = makeSVG(rows, metrics, LABEL_W, CHART_W, VALUE_W, COL_GAP, HEADER_H, BAR_H, ROW_GAP);
+      container.appendChild(svg);
+      requestAnimationFrame(() => { requestAnimationFrame(() => { allRects.forEach(({rect, targetW}) => { rect.setAttribute('width', targetW); }); }); });
+    }
   }
 
   const chartContainer = document.getElementById('chart-container');
@@ -185,6 +169,23 @@
       document.body.classList.remove('dialog-open');
       if (trigger) trigger.focus();
     });
+  }
+
+  /* ── force autoplay on mobile (iOS sometimes ignores autoplay attribute) ── */
+  const vids = document.querySelectorAll('video[autoplay]');
+  if (vids.length) {
+    const playVisible = () => {
+      vids.forEach(v => {
+        const r = v.getBoundingClientRect();
+        if (r.bottom > 0 && r.top < window.innerHeight && v.paused) {
+          v.play().catch(() => {});
+        }
+      });
+    };
+    window.addEventListener('scroll', playVisible, {passive: true});
+    window.addEventListener('touchstart', playVisible, {once: true, passive: true});
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) playVisible(); });
+    playVisible();
   }
 
   /* ── smooth scroll with ease-out deceleration ── */
